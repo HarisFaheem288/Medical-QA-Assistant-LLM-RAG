@@ -21,13 +21,11 @@ def load_model():
 
     # Download model.safetensors from Google Drive if not present
     if not os.path.exists(MODEL_PATH):
-        st.warning("Downloading model.safetensors from Google Drive...")
         url = f"https://drive.google.com/uc?id={FILE_ID}"
         gdown.download(url, MODEL_PATH, quiet=False)
         if not os.path.exists(MODEL_PATH) or os.path.getsize(MODEL_PATH) < 100_000_000:
             st.error("❌ model.safetensors download failed or file too small. Check the Drive link.")
             st.stop()
-        st.success("✅ model.safetensors downloaded successfully!")
 
     # Load tokenizer and model
     tokenizer = GPT2Tokenizer.from_pretrained(MODEL_DIR)
@@ -77,7 +75,7 @@ def generate_answer(query, context_chunks):
 
 # 🧠 Streamlit UI
 st.title("🧠 Medical Q&A Assistant (LLM + RAG)")
-st.markdown("Ask a medical question. The answer is based on your fine-tuned model and indexed knowledge.")
+st.markdown("Ask a medical question. The answer is based on fine-tuned model and indexed knowledge.")
 
 query = st.text_input("📝 Enter your medical question:")
 
