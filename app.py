@@ -62,17 +62,16 @@ def generate_answer(query, context_chunks):
 st.title("🧠 Medical Q&A Assistant (LLM + RAG)")
 st.markdown("Ask a medical question. The answer is based on your fine-tuned model and indexed knowledge.")
 
-query = st.text_input("Enter your medical question:")
+query = st.text_input("📝 Enter your medical question:")
 
 if query:
     with st.spinner("🔍 Retrieving relevant context..."):
         top_chunks = retrieve_chunks(query)
+    
     with st.spinner("🤖 Generating answer..."):
         answer = generate_answer(query, top_chunks)
 
-    st.subheader("🧠 Answer:")
-    st.write(answer)
+    st.success("✅ Answer generated!")
 
-    with st.expander("📄 Retrieved Chunks (Context)"):
-        for i, chunk in enumerate(top_chunks):
-            st.markdown(f"**Chunk {i+1}:** {chunk}")
+    st.markdown("### 🧠 Answer:")
+    st.write(answer)
