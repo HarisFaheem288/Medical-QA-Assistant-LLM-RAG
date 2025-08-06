@@ -7,6 +7,7 @@ from transformers import GPTNeoForCausalLM, GPT2Tokenizer
 import torch
 import requests
 import os
+import gdown
 # 📁 Paths
 MODEL_DIR = "./neo_outputs"
 INDEX_DIR = "./vector_index"
@@ -14,23 +15,18 @@ INDEX_DIR = "./vector_index"
 # ✅ Load fine-tuned model + tokenizerimport os
 @st.cache_resource
 def load_model():
-    # Google Drive File ID of the uploaded model.safetensors
-    FILE_ID = "1r3X8Y5EMRIIgQlzIOMSBXLt9sWXXJ4gh"  # ← Replace with your actual ID
+    FILE_ID = "YOUR_FILE_ID_HERE"  # Replace this
     MODEL_DIR = "./neo_outputs"
     MODEL_PATH = os.path.join(MODEL_DIR, "model.safetensors")
+    os.makedirs(MODEL_DIR, exist_ok=True)
 
-    # Download if not already present
+    # Use gdown for safe downloading
     if not os.path.exists(MODEL_PATH):
-        st.warning("Downloading model.safetensors from Google Drive... (One-time)")
-        download_url = f"https://drive.google.com/uc?export=download&id={FILE_ID}"
-        response = requests.get(download_url, stream=True)
-        with open(MODEL_PATH, "wb") as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                if chunk:
-                    f.write(chunk)
-        st.success("Download complete ✅")
+        st.warning("Downloading model.safetensors from Google Drive...")
+        url = f"https://drive.google.com/uc?id={1r3X8Y5EMRIIgQlzIOMSBXLt9sWXXJ4gh}"
+        gdown.download(url, MODEL_PATH, quiet=False)
+        st.success("✅ model.safetensors downloaded")
 
-    # Load tokenizer and model
     tokenizer = GPT2Tokenizer.from_pretrained(MODEL_DIR)
     tokenizer.pad_token = tokenizer.eos_token
     model = GPTNeoForCausalLM.from_pretrained(MODEL_DIR).to("cuda" if torch.cuda.is_available() else "cpu")
