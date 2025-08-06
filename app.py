@@ -74,7 +74,7 @@ def generate_answer(query, context_chunks):
     return tokenizer.decode(outputs[0], skip_special_tokens=True)[len(prompt):].strip()
 
 # 🧠 Streamlit UI
-st.title("Medical Q&A Assistant (LLM + RAG)")
+st.title("Medical Q&A Assistant")
 st.markdown("Ask a medical question. The answer is based on fine-tuned model and indexed knowledge.")
 
 query = st.text_input("📝 Enter your medical question:")
@@ -88,7 +88,7 @@ if query:
 
     st.success("✅ Answer generated!")
 
-    st.markdown("### 🧠 Answer:")
+    st.markdown("### Answer:")
     st.write(answer)
 
     with st.expander("📄 Retrieved Context Chunks"):
