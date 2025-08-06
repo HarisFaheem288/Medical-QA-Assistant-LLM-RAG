@@ -1,4 +1,4 @@
-# 🧠 LLM-Medical-QA-App (RAG + GPT-Neo + Streamlit)
+# 🧠 LLM-Medical-QA-App (RAG + GPT-Neo)
 
 A **Medical Question Answering Application** built using a **fine-tuned GPT-Neo model**, enhanced with **FAISS vector search** for Retrieval-Augmented Generation (RAG), and deployed using **Streamlit**.
 
