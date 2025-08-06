@@ -15,7 +15,7 @@ INDEX_DIR = "./vector_index"
 # ✅ Load fine-tuned model + tokenizerimport os
 @st.cache_resource
 def load_model():
-    FILE_ID = "YOUR_FILE_ID_HERE"  # Replace this
+    FILE_ID = "1r3X8Y5EMRIIgQlzIOMSBXLt9sWXXJ4gh"
     MODEL_DIR = "./neo_outputs"
     MODEL_PATH = os.path.join(MODEL_DIR, "model.safetensors")
     os.makedirs(MODEL_DIR, exist_ok=True)
@@ -23,7 +23,7 @@ def load_model():
     # Use gdown for safe downloading
     if not os.path.exists(MODEL_PATH):
         st.warning("Downloading model.safetensors from Google Drive...")
-        url = f"https://drive.google.com/uc?id={1r3X8Y5EMRIIgQlzIOMSBXLt9sWXXJ4gh}"
+        url = f"https://drive.google.com/uc?id={FILE_ID}"
         gdown.download(url, MODEL_PATH, quiet=False)
         st.success("✅ model.safetensors downloaded")
 
@@ -31,7 +31,6 @@ def load_model():
     tokenizer.pad_token = tokenizer.eos_token
     model = GPTNeoForCausalLM.from_pretrained(MODEL_DIR).to("cuda" if torch.cuda.is_available() else "cpu")
     return model, tokenizer
-
 
 # ✅ Load FAISS index + text chunks
 @st.cache_resource
