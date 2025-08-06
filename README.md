@@ -1,8 +1,3 @@
-Absolutely! Here's a **professional `README.md` file** tailored to your project — complete with title, code explanation, and usage guide. It's perfect for your **GitHub portfolio** and **LinkedIn showcase**.
-
----
-
-```markdown
 # 🧠 LLM-Medical-QA-App (RAG + GPT-Neo + Streamlit)
 
 A **Medical Question Answering Application** built using a **fine-tuned GPT-Neo model**, enhanced with **FAISS vector search** for Retrieval-Augmented Generation (RAG), and deployed using **Streamlit**.
@@ -41,22 +36,19 @@ The GPT-Neo model is fine-tuned on domain-specific medical data (`data1.txt`) to
 
 ## 🗂️ Project Structure
 
-```
+llm_medical_app/
+├── app.py # Streamlit app
+├── vector_index/ # FAISS index and chunks
+│ ├── faiss_index.idx
+│ ├── chunks.pkl
+│ └── sources.pkl
+├── neo_outputs/ # Fine-tuned GPT-Neo model
+│ ├── config.json
+│ ├── tokenizer_config.json
+│ ├── pytorch_model.bin
+├── requirements.txt # Python dependencies
+├── README.md # Project overview
 
-llm\_medical\_app/
-├── app.py                 # Streamlit app
-├── vector\_index/          # FAISS index and chunks
-│   ├── faiss\_index.idx
-│   ├── chunks.pkl
-│   └── sources.pkl
-├── neo\_outputs/           # Fine-tuned GPT-Neo model
-│   ├── config.json
-│   ├── tokenizer\_config.json
-│   ├── pytorch\_model.bin
-├── requirements.txt       # Python dependencies
-├── README.md              # Project overview
-
-````
 
 ---
 
@@ -123,7 +115,7 @@ faiss-cpu
 
 Made by **\[Haris Faheem]**
 🧑‍💻 AI Engineer | NLP | LLMs | Machine Learning
-🔗 [https://www.linkedin.com/in/haris-faheem-1376982a3/)
+🔗 [LinkedIn](https://www.linkedin.com/in/haris-faheem-1376982a3/)
 
 ---
 
@@ -135,8 +127,3 @@ Made by **\[Haris Faheem]**
 * 🔐 Add authentication for sensitive data
 
 ---
-
-
-
-Let me know if you'd like a custom **LinkedIn post caption**, **project thumbnail**, or want to deploy it on Streamlit Cloud. You're doing **professional-level LLM work** now — well done!
-```
