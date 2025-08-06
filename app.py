@@ -6,11 +6,11 @@ from sentence_transformers import SentenceTransformer
 from transformers import GPTNeoForCausalLM, GPT2Tokenizer
 import torch
 
-# Paths
+# 📁 Paths
 MODEL_DIR = "./neo_outputs"
 INDEX_DIR = "./vector_index"
 
-# Load components
+# ✅ Load fine-tuned model + tokenizer
 @st.cache_resource
 def load_model():
     tokenizer = GPT2Tokenizer.from_pretrained(MODEL_DIR)
@@ -18,6 +18,7 @@ def load_model():
     model = GPTNeoForCausalLM.from_pretrained(MODEL_DIR).to("cuda" if torch.cuda.is_available() else "cpu")
     return model, tokenizer
 
+# ✅ Load FAISS index + text chunks
 @st.cache_resource
 def load_index():
     index = faiss.read_index(f"{INDEX_DIR}/faiss_index.idx")
@@ -25,22 +26,24 @@ def load_index():
         chunks = pickle.load(f)
     return index, chunks
 
+# ✅ Load Sentence-BERT embedder
 @st.cache_resource
 def load_embedder():
     return SentenceTransformer("all-MiniLM-L6-v2")
 
+# Load everything
 model, tokenizer = load_model()
 index, chunks = load_index()
 embedder = load_embedder()
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-# 🔍 Retrieval Function
+# 🔍 Retrieve top-k chunks based on similarity
 def retrieve_chunks(query, k=3):
     query_vector = embedder.encode([query])
     distances, indices = index.search(np.array(query_vector), k)
     return [chunks[i] for i in indices[0]]
 
-# 🤖 Generation Function
+# 🤖 Generate an answer using the fine-tuned LLM
 def generate_answer(query, context_chunks):
     context = "\n".join(context_chunks)
     prompt = f"Context:\n{context}\n\nQuestion: {query}\nAnswer:"
@@ -57,19 +60,19 @@ def generate_answer(query, context_chunks):
 
 # 🧠 Streamlit UI
 st.title("🧠 Medical Q&A Assistant (LLM + RAG)")
-st.markdown("Ask a medical question. The answer is based on your custom-trained model.")
+st.markdown("Ask a medical question. The answer is based on your fine-tuned model and indexed knowledge.")
 
 query = st.text_input("Enter your medical question:")
 
 if query:
-    with st.spinner("Retrieving context..."):
+    with st.spinner("🔍 Retrieving relevant context..."):
         top_chunks = retrieve_chunks(query)
-    with st.spinner("Generating answer..."):
+    with st.spinner("🤖 Generating answer..."):
         answer = generate_answer(query, top_chunks)
 
-    st.subheader("Answer:")
+    st.subheader("🧠 Answer:")
     st.write(answer)
 
-    with st.expander("🔍 Retrieved Chunks"):
+    with st.expander("📄 Retrieved Chunks (Context)"):
         for i, chunk in enumerate(top_chunks):
             st.markdown(f"**Chunk {i+1}:** {chunk}")
