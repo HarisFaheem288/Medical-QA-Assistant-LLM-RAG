@@ -5,18 +5,37 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 from transformers import GPTNeoForCausalLM, GPT2Tokenizer
 import torch
-
+import requests
+import os
 # 📁 Paths
 MODEL_DIR = "./neo_outputs"
 INDEX_DIR = "./vector_index"
 
-# ✅ Load fine-tuned model + tokenizer
+# ✅ Load fine-tuned model + tokenizerimport os
 @st.cache_resource
 def load_model():
+    # Google Drive File ID of the uploaded model.safetensors
+    FILE_ID = "1r3X8Y5EMRIIgQlzIOMSBXLt9sWXXJ4gh"  # ← Replace with your actual ID
+    MODEL_DIR = "./neo_outputs"
+    MODEL_PATH = os.path.join(MODEL_DIR, "model.safetensors")
+
+    # Download if not already present
+    if not os.path.exists(MODEL_PATH):
+        st.warning("Downloading model.safetensors from Google Drive... (One-time)")
+        download_url = f"https://drive.google.com/uc?export=download&id={FILE_ID}"
+        response = requests.get(download_url, stream=True)
+        with open(MODEL_PATH, "wb") as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+        st.success("Download complete ✅")
+
+    # Load tokenizer and model
     tokenizer = GPT2Tokenizer.from_pretrained(MODEL_DIR)
     tokenizer.pad_token = tokenizer.eos_token
     model = GPTNeoForCausalLM.from_pretrained(MODEL_DIR).to("cuda" if torch.cuda.is_available() else "cpu")
     return model, tokenizer
+
 
 # ✅ Load FAISS index + text chunks
 @st.cache_resource
