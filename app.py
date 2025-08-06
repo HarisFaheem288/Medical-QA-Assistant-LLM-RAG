@@ -5,28 +5,31 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 from transformers import GPTNeoForCausalLM, GPT2Tokenizer
 import torch
-import requests
 import os
 import gdown
+
 # 📁 Paths
 MODEL_DIR = "./neo_outputs"
 INDEX_DIR = "./vector_index"
+MODEL_PATH = os.path.join(MODEL_DIR, "model.safetensors")
 
-# ✅ Load fine-tuned model + tokenizerimport os
+# ✅ Load fine-tuned model + tokenizer
 @st.cache_resource
 def load_model():
     FILE_ID = "1r3X8Y5EMRIIgQlzIOMSBXLt9sWXXJ4gh"
-    MODEL_DIR = "./neo_outputs"
-    MODEL_PATH = os.path.join(MODEL_DIR, "model.safetensors")
     os.makedirs(MODEL_DIR, exist_ok=True)
 
-    # Use gdown for safe downloading
+    # Download model.safetensors from Google Drive if not present
     if not os.path.exists(MODEL_PATH):
         st.warning("Downloading model.safetensors from Google Drive...")
         url = f"https://drive.google.com/uc?id={FILE_ID}"
         gdown.download(url, MODEL_PATH, quiet=False)
-        st.success("✅ model.safetensors downloaded")
+        if not os.path.exists(MODEL_PATH) or os.path.getsize(MODEL_PATH) < 100_000_000:
+            st.error("❌ model.safetensors download failed or file too small. Check the Drive link.")
+            st.stop()
+        st.success("✅ model.safetensors downloaded successfully!")
 
+    # Load tokenizer and model
     tokenizer = GPT2Tokenizer.from_pretrained(MODEL_DIR)
     tokenizer.pad_token = tokenizer.eos_token
     model = GPTNeoForCausalLM.from_pretrained(MODEL_DIR).to("cuda" if torch.cuda.is_available() else "cpu")
@@ -45,7 +48,7 @@ def load_index():
 def load_embedder():
     return SentenceTransformer("all-MiniLM-L6-v2")
 
-# Load everything
+# Load all resources
 model, tokenizer = load_model()
 index, chunks = load_index()
 embedder = load_embedder()
@@ -57,7 +60,7 @@ def retrieve_chunks(query, k=3):
     distances, indices = index.search(np.array(query_vector), k)
     return [chunks[i] for i in indices[0]]
 
-# 🤖 Generate an answer using the fine-tuned LLM
+# 🤖 Generate answer using fine-tuned model
 def generate_answer(query, context_chunks):
     context = "\n".join(context_chunks)
     prompt = f"Context:\n{context}\n\nQuestion: {query}\nAnswer:"
@@ -81,7 +84,7 @@ query = st.text_input("📝 Enter your medical question:")
 if query:
     with st.spinner("🔍 Retrieving relevant context..."):
         top_chunks = retrieve_chunks(query)
-    
+
     with st.spinner("🤖 Generating answer..."):
         answer = generate_answer(query, top_chunks)
 
@@ -89,3 +92,7 @@ if query:
 
     st.markdown("### 🧠 Answer:")
     st.write(answer)
+
+    with st.expander("📄 Retrieved Context Chunks"):
+        for i, chunk in enumerate(top_chunks):
+            st.markdown(f"**Chunk {i+1}:** {chunk}")
