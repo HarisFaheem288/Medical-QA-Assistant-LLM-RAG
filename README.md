@@ -57,7 +57,7 @@ llm_medical_app/
 ### 1. 🔽 Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/LLM-Medical-QA-App.git
+git clone https://github.com/HarisFaheem288/LLM-Medical-QA-App.git
 cd LLM-Medical-QA-App
 ````
 
