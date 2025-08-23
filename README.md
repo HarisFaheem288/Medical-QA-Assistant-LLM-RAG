@@ -35,7 +35,7 @@ The GPT-Neo model is fine-tuned on domain-specific medical data (`data1.txt`) to
 ---
 
 ## 🗂️ Project Structure
-'''
+```
 llm_medical_app/
 ├── app.py # Streamlit app
 ├── vector_index/ # FAISS index and chunks
@@ -48,7 +48,7 @@ llm_medical_app/
 │ ├── pytorch_model.bin
 ├── requirements.txt # Python dependencies
 ├── README.md # Project overview
-'''
+```
 
 ---
 
